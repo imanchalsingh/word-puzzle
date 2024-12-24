@@ -1,33 +1,35 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
+import React, { useEffect, useRef } from 'react';
+import { Fireworks } from 'fireworks-js'; // Import Fireworks directly
+import './App.css';
 
-function App() {
-  const [isLoaded, setIsLoaded] = useState(false);
+const App: React.FC = () => {
+  const fireworksRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 2500); // 2.5 seconds wait
+    if (fireworksRef.current) {
+      // Initialize fireworks directly
+      const options = {
+        speed: 3,
+        particles: 500,
+        acceleration: 5,
+        friction: 0.95,
+        gravity: 0.3,
+        trace: 7,
+        explosion: 5,
+      };
 
-    return () => clearTimeout(timer);
+      const fireworks = new Fireworks(fireworksRef.current, options as any); // Assert 'any' for TypeScript
+      fireworks.start();
+
+      return () => fireworks.stop(); // Cleanup on unmount
+    }
   }, []);
 
   return (
-    <div className="app">
-      {!isLoaded && (
-        <div id="loader">
-          <div className="avatar"></div>
-        </div>
-      )}
-      {isLoaded && (
-        <iframe
-          id="wordgus-frame"
-          src="https://wordgus.vercel.app"
-          allowFullScreen
-          title="WordGus"
-        />
-      )}
+    <div className="fireworks" ref={fireworksRef}>
+      
     </div>
   );
-}
+};
 
 export default App;
